@@ -1,26 +1,29 @@
 class Node(object):
     """docstring for Node"""
+
     def __init__(self, name):
         super(Node, self).__init__()
         self.name = name
-    
+
     def get_name(self):
         return self.name
-    
+
     def __str__(self):
         return self.name
-    
+
     def __eq__(self, other):
         return self.name == other.name
-    
+
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __hash__(self):
         return self.name.__hash__()
 
+
 class Edge(object):
     """docstring for Edge"""
+
     def __init__(self, src, dest):
         super(Edge, self).__init__()
         self.src = src
@@ -38,27 +41,41 @@ class Edge(object):
 
 class Digraph(object):
     """docstring for Digraph"""
+
     def __init__(self):
         super(Digraph, self).__init__()
         self.nodes = set()
         self.edges = {}
 
     def add_node(self, node):
-        if not(node in self.nodes):
+        if not (node in self.nodes):
             self.nodes.add(node)
             self.edges[node] = []
-        # if node in self.nodes:
-        #     raise ValueError('Duplicate Node')
-        # else:
-        #     self.nodes.add(node)
-        #     self.edges[node] = []
+            # if node in self.nodes:
+            #     raise ValueError('Duplicate Node')
+            # else:
+            #     self.nodes.add(node)
+            #     self.edges[node] = []
 
     def add_edge(self, edge):
         src = edge.get_source()
         dest = edge.get_destination()
-        if not(src in self.nodes and dest in self.nodes):
+        if not (src in self.nodes and dest in self.nodes):
             raise ValueError('Node not in graph')
         self.edges[src].append(dest)
+
+    def reverse(self):
+        rev_graph = Digraph()
+        rev_graph.nodes = self.nodes
+        for node in rev_graph.nodes:
+            rev_graph.edges[node] = []
+        for src in self.edges:
+            dest_ls = self.edges[src]
+            for dest in dest_ls:
+                rev_graph.edges[dest].append(src)
+        return rev_graph
+
+
 
     def children_of(self, node):
         return self.edges[node]
@@ -69,15 +86,16 @@ class Digraph(object):
     def __str__(self):
         res = ''
         for k in self.edges:
-            for  d in self.edges[k]:
+            for d in self.edges[k]:
                 res = '{0}{1}->{2}\n'.format(res, k, d)
         return res[:-1]
 
 
 class WeightedEdge(Edge):
     """docstring for weighted_edge"""
+
     def __init__(self, src, dest, distance):
-        super(weighted_edge, self).__init__(src, dest)
+        super(WeightedEdge, self).__init__(src, dest)
         self.distance = distance
 
     def get_distance(self):
@@ -86,18 +104,20 @@ class WeightedEdge(Edge):
     def __str__(self):
         return '{0}->{1} ({2})'.format(self.src, self.dest, self.distance)
 
+
 class WeightedDigraph(Digraph):
     """docstring for weighted_digraph"""
+
     def __init__(self, arg):
-        super(weighted_digraph, self).__init__()
-    
+        super(WeightedDigraph, self).__init__()
+
     def add_edge(self, edge):
         src = edge.get_source()
         dest = edge.get_destination()
-        if not(src in self.nodes and dest in self.nodes):
+        if not (src in self.nodes and dest in self.nodes):
             raise ValueError('Node not in graph')
         self.edges[src].append((dest, edge.get_distance()))
-        
+
     def childrenOf(self, node):
         return [tmp[0] for tmp in self.edges[node]]
 
@@ -107,7 +127,6 @@ class WeightedDigraph(Digraph):
             for d in self.edges[k]:
                 res = '{0}{1}->{2} ({3})\n'.format(res, k.getName(), d[0], float(d[1]))
         return res[:-1]
-
 
 
 def load_digraph(filename):
@@ -141,6 +160,7 @@ def load_bigraph(filename):
 
     return bigraph
 
+
 def load_weighted_graph(filename):
     with open(filename) as f:
         weighted_digraph = WeightedDigraph()
@@ -151,12 +171,9 @@ def load_weighted_graph(filename):
             weighted_digraph.add_node(src)
             weighted_digraph.add_node(dest)
             weighted_edge = WeightedEdge(src, dest, float(words[2]))
-            weighted_digraph.add_edge(edge)
- 
-    return weighted_digraph
-                
-    
+            weighted_digraph.add_edge(weighted_edge)
 
+    return weighted_digraph
 
 
 def load_map(mapFilename):
@@ -202,5 +219,4 @@ def load_map(mapFilename):
         except Exception as e:
             pass
     file.close()
-    return mitMap  
-                                                            
+    return mitMap
