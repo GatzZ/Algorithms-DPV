@@ -47,6 +47,12 @@ class Digraph(object):
         self.nodes = set()
         self.edges = {}
 
+    def __getitem__(self, name):
+        for node in self.nodes:
+            if name == str(node):
+                return node
+
+
     def add_node(self, node):
         if not (node in self.nodes):
             self.nodes.add(node)
