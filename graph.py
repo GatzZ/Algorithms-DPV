@@ -114,7 +114,7 @@ class WeightedEdge(Edge):
 class WeightedDigraph(Digraph):
     """docstring for weighted_digraph"""
 
-    def __init__(self, arg):
+    def __init__(self):
         super(WeightedDigraph, self).__init__()
 
     def add_edge(self, edge):
