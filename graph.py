@@ -45,6 +45,7 @@ class Digraph(object):
     def __init__(self):
         super(Digraph, self).__init__()
         self.nodes = set()
+        self.raw_edges = set()
         self.edges = {}
 
     def __getitem__(self, name):
@@ -64,6 +65,7 @@ class Digraph(object):
             #     self.edges[node] = []
 
     def add_edge(self, edge):
+        self.raw_edges.add(edge)
         src = edge.get_source()
         dest = edge.get_destination()
         if not (src in self.nodes and dest in self.nodes):
@@ -113,11 +115,11 @@ class WeightedEdge(Edge):
 
 class WeightedDigraph(Digraph):
     """docstring for weighted_digraph"""
-
     def __init__(self):
         super(WeightedDigraph, self).__init__()
 
     def add_edge(self, edge):
+        self.raw_edges.add(edge)
         src = edge.get_source()
         dest = edge.get_destination()
         if not (src in self.nodes and dest in self.nodes):
