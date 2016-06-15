@@ -26,7 +26,7 @@ def prim(weighted_graph):
     return cost, prev, res_node
 
 
-weighted_graph = load_weighted_graph('data/bigraph_dpv5-9')
+weighted_graph = load_weighted_digraph('data/bigraph_dpv5-9')
 # weighted_graph = load_weighted_graph('data/bigraph_dpv_Ex5-1')
 cost, prev, res_node = prim(weighted_graph)
 

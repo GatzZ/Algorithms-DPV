@@ -40,7 +40,7 @@ def kruskal(weighted_graph):
 
 
 # weighted_graph = load_weighted_graph('data/bigraph_dpv5-3')
-weighted_graph = load_weighted_graph('data/bigraph_dpv_Ex5-1')
+weighted_graph = load_weighted_digraph('data/bigraph_dpv_Ex5-1')
 result = kruskal(weighted_graph)
 print '--------------------------result-------------------------------- '
 for edge in result:

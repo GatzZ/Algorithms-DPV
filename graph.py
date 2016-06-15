@@ -53,7 +53,6 @@ class Digraph(object):
             if name == str(node):
                 return node
 
-
     def add_node(self, node):
         if not (node in self.nodes):
             self.nodes.add(node)
@@ -82,8 +81,6 @@ class Digraph(object):
             for dest in dest_ls:
                 rev_graph.edges[dest].append(src)
         return rev_graph
-
-
 
     def children_of(self, node):
         return self.edges[node]
@@ -115,6 +112,7 @@ class WeightedEdge(Edge):
 
 class WeightedDigraph(Digraph):
     """docstring for weighted_digraph"""
+
     def __init__(self):
         super(WeightedDigraph, self).__init__()
 
@@ -135,6 +133,79 @@ class WeightedDigraph(Digraph):
             for d in self.edges[k]:
                 res = '{0}{1}->{2} ({3})\n'.format(res, k.getName(), d[0], float(d[1]))
         return res[:-1]
+
+
+class WeightedBigraph(WeightedDigraph):
+    def __init__(self):
+        super(WeightedBigraph, self).__init__()
+
+    def add_edge(self, edge):
+        self.raw_edges.add(edge)
+        src = edge.get_source()
+        dest = edge.get_destination()
+        if not (src in self.nodes and dest in self.nodes):
+            raise ValueError('Node not in graph')
+        self.edges[src].append((dest, edge.get_distance()))
+        self.edges[dest].append((src, edge.get_distance()))
+
+
+class FlowEdge(object):
+    def __init__(self, u, v, w):
+        self.src = u
+        self.dest = v
+        self.capacity = w
+        self.rev_edge = None
+
+    def __str__(self):
+        return "%s->%s:%s" % (self.src, self.dest, self.capacity)
+
+
+class FlowNetwork(object):
+    def __init__(self):
+        self.nodes = set()
+        self.adj = {}
+        self.flow = {}
+
+    def add_node(self, node):
+        if not node in self.nodes:
+            self.nodes.add(node)
+            self.adj[node] = []
+
+    def add_edge(self, src, dest, w=0):
+        if src == dest:
+            raise ValueError("src == dest")
+        if not (src in self.nodes and dest in self.nodes):
+            raise ValueError("src or dest not exist")
+        edge = FlowEdge(src, dest, w)
+        rev_edge = FlowEdge(dest, src, 0)
+        edge.rev_edge = rev_edge
+        rev_edge.rev_edge = edge
+        self.adj[src].append(edge)
+        self.adj[dest].append(rev_edge)
+        self.flow[edge] = 0
+        self.flow[rev_edge] = 0
+
+    def find_augmenting_path(self, src, sink, path):
+        if src == sink:
+            return path
+        # BFS to find a shortest augmenting path
+        for edge in self.adj[src]:
+            residual = edge.capacity - self.flow[edge]
+            if residual > 0 and edge not in path:
+                path = self.find_augmenting_path(edge.dest, sink, path + [edge])
+            return path
+
+    def ford_fulkerson(self, source, sink):
+        path = self.find_augmenting_path(source, sink, [])
+        while path != None:
+            residuals = [edge.capacity - self.flow[edge] for edge in path]
+            bottle_flow = min(residuals)
+            for edge in path:
+                self.flow[edge] += bottle_flow
+                self.flow[edge.redge] -= bottle_flow
+            path = self.find_augmenting_path(source, sink, [])
+        return sum(self.flow[edge] for edge in self.adj[source])
+
 
 
 def load_digraph(filename):
@@ -169,7 +240,7 @@ def load_bigraph(filename):
     return bigraph
 
 
-def load_weighted_graph(filename):
+def load_weighted_digraph(filename):
     with open(filename) as f:
         weighted_digraph = WeightedDigraph()
         for line in f:

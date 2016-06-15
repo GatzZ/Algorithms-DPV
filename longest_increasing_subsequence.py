@@ -1,7 +1,6 @@
 from graph import *
 from collections import namedtuple
 
-
 def longest_increasing_subsequence(seq):
     def get_max_idx(seqnode_list):
         if not seqnode_list:
