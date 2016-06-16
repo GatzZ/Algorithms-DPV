@@ -42,7 +42,7 @@ class FlowNetwork(object):
             residual = edge.capacity - self.flow[edge]
             if residual > 0 and edge not in path:
                 result = self.find_augmenting_path(edge.dest, sink, path + [edge])
-                if result:
+                if result:  # get the sink
                     return result
 
     def ford_fulkerson(self, source, sink):
