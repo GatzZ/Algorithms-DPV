@@ -1,15 +1,16 @@
 class Node(object):
     """docstring for Node"""
 
-    def __init__(self, name):
+    def __init__(self, name, val=None):
         super(Node, self).__init__()
         self.name = name
+        self.val = val
 
     def get_name(self):
         return self.name
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def __eq__(self, other):
         return self.name == other.name
@@ -50,7 +51,7 @@ class Digraph(object):
 
     def __getitem__(self, name):
         for node in self.nodes:
-            if name == str(node):
+            if name == node.name:
                 return node
 
     def add_node(self, node):
